@@ -86,6 +86,7 @@ main {
     align-items: center;
     padding: 20px;
     position: relative;
+    justify-content: center; /* Center content vertically */
 }
 
 #game-board {
@@ -262,9 +263,13 @@ footer button:hover {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    main {
+        padding: 10px; /* Reduce padding on smaller screens */
+    }
+
     #game-board {
         width: 90vw; /* Set a larger percentage width for smaller screens */
-        height: 90vw; /* Maintain aspect ratio */
+        height: 70vw; /* Maintain aspect ratio but reduce height */
         gap: 4px; /* Adjust gap between tiles */
     }
 
@@ -276,11 +281,15 @@ footer button:hover {
 @media (max-width: 480px) {
     #game-board {
         width: 95vw; /* Set a larger percentage width for extra small screens */
-        height: 95vw; /* Maintain aspect ratio */
+        height: 80vw; /* Maintain aspect ratio and increase height for better fit */
         gap: 2px; /* Adjust gap between tiles */
     }
 
     .tile {
         font-size: 3.5em; /* Increase font size for even better visibility */
+    }
+
+    footer {
+        padding: 10px; /* Reduce footer padding */
     }
 }
