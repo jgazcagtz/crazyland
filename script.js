@@ -146,7 +146,7 @@ let firstSelection = null;
 let score = 0;
 let level = 1;
 let moves = 30;
-let timer = 60;
+let timer = 90;
 let gameInterval;
 let isAnimating = false;
 let comboActive = false;
@@ -551,7 +551,7 @@ function resetGame() {
     score = 0;
     level = 1;
     moves = 30;
-    timer = 60;
+    timer = 90;
     clearInterval(gameInterval);
     powerUpsUnlocked = false; // Reset power-ups
     numRows = 8; // Reset rows
