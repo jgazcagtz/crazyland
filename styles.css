@@ -90,16 +90,15 @@ main {
 
 #game-board {
     display: grid;
-    grid-template-columns: repeat(auto-fit, 70px); /* Dynamically adjust column count */
-    grid-auto-rows: 70px; /* Fixed row height */
+    grid-template-columns: repeat(8, 1fr); /* Fixed 8 columns */
+    grid-template-rows: repeat(8, 1fr); /* Fixed 8 rows */
+    width: 560px; /* Set a fixed width for the board */
+    height: 560px; /* Set a fixed height for the board */
     gap: 6px;
-    perspective: 1000px;
     margin-bottom: 20px;
 }
 
 .tile {
-    width: 70px;
-    height: 70px;
     background-color: #fff;
     border: 3px solid #ccc;
     border-radius: 15px;
@@ -110,6 +109,15 @@ main {
     cursor: pointer;
     transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s;
     position: relative;
+    line-height: 1; /* Ensure proper spacing for emojis */
+    user-select: none; /* Prevent text selection */
+}
+
+/* Active state for when the tile is being tapped */
+.tile:active {
+    transform: scale(1.1); /* Slightly scale up the tile */
+    background-color: #ffebcd; /* Change background color on tap */
+    box-shadow: 0 0 15px rgba(255, 165, 0, 0.6); /* Add shadow for depth */
 }
 
 .tile.selected {
@@ -253,80 +261,26 @@ footer button:hover {
 }
 
 /* Responsive Design */
-@media (max-width: 1440px) {
-    #game-board {
-        grid-template-columns: repeat(auto-fit, 60px);
-        grid-auto-rows: 60px;
-    }
-
-    .tile {
-        width: 60px;
-        height: 60px;
-        font-size: 2em;
-    }
-}
-
-@media (max-width: 1024px) {
-    #game-board {
-        grid-template-columns: repeat(auto-fit, 55px);
-        grid-auto-rows: 55px;
-    }
-
-    .tile {
-        width: 55px;
-        height: 55px;
-        font-size: 1.8em;
-    }
-
-    .game-info {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .power-ups {
-        margin-top: 10px;
-    }
-}
-
 @media (max-width: 768px) {
     #game-board {
-        grid-template-columns: repeat(auto-fit, 50px);
-        grid-auto-rows: 50px;
+        width: 90vw; /* Set a larger percentage width for smaller screens */
+        height: 90vw; /* Maintain aspect ratio */
+        gap: 4px; /* Adjust gap between tiles */
     }
 
     .tile {
-        width: 50px;
-        height: 50px;
-        font-size: 1.8em;
-    }
-
-    .instructions {
-        padding: 20px;
-    }
-
-    footer {
-        flex-direction: column;
-        gap: 10px;
+        font-size: 3em; /* Increase font size for better visibility */
     }
 }
 
 @media (max-width: 480px) {
     #game-board {
-        grid-template-columns: repeat(auto-fit, 40px);
-        grid-auto-rows: 40px;
+        width: 95vw; /* Set a larger percentage width for extra small screens */
+        height: 95vw; /* Maintain aspect ratio */
+        gap: 2px; /* Adjust gap between tiles */
     }
 
     .tile {
-        width: 40px;
-        height: 40px;
-        font-size: 1.5em;
-    }
-
-    .instructions {
-        padding: 15px;
-    }
-
-    .game-info {
-        font-size: 0.9em;
+        font-size: 3.5em; /* Increase font size for even better visibility */
     }
 }
