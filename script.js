@@ -530,7 +530,7 @@ function checkLevelComplete() {
 function advanceLevel() {
     level++;
     moves += 10;
-    timer += 30;
+    timer += 90;
     if (numCols < 12) numCols++; // Increase columns up to a maximum
     updateEmojiGroup(); // Change emoji group for the new level
     board = createBoard();
