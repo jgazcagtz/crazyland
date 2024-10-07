@@ -146,7 +146,7 @@ let firstSelection = null;
 let score = 0;
 let level = 1;
 let moves = 30;
-let timer = 90;
+let timer = 60;
 let gameInterval;
 let isAnimating = false;
 let comboActive = false;
@@ -530,7 +530,7 @@ function checkLevelComplete() {
 function advanceLevel() {
     level++;
     moves += 10;
-    timer += 90;
+    timer += 30;
     if (numCols < 12) numCols++; // Increase columns up to a maximum
     updateEmojiGroup(); // Change emoji group for the new level
     board = createBoard();
@@ -551,7 +551,7 @@ function resetGame() {
     score = 0;
     level = 1;
     moves = 30;
-    timer = 90;
+    timer = 60;
     clearInterval(gameInterval);
     powerUpsUnlocked = false; // Reset power-ups
     numRows = 8; // Reset rows
