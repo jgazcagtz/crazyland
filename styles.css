@@ -13,7 +13,7 @@ body {
     min-height: 100vh;
     color: #333;
     position: relative;
-    overflow-x: hidden;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 header {
@@ -94,11 +94,10 @@ main {
     position: relative;
     justify-content: center;
     animation: slideIn 1.2s ease-out;
-    overflow-y: auto; /* Allow scrolling if content overflows */
+    overflow-y: auto; /* Allow vertical scrolling if needed */
     z-index: 0; /* Ensure main is below header and above footer */
 }
 
-/* Start Button Styles */
 #start-button {
     font-family: "Silkscreen", sans-serif;
     position: absolute;
@@ -133,8 +132,10 @@ main {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: repeat(8, 1fr);
-    width: 560px;
-    height: 560px;
+    width: 100%; /* Set to 100% to utilize available space */
+    max-width: 560px; /* Maximum width to maintain design */
+    height: auto; /* Allow height to adjust based on width */
+    aspect-ratio: 1 / 1; /* Maintain square shape */
     gap: 6px;
     margin-bottom: 20px;
     animation: rotateIn 1s ease-out;
@@ -363,14 +364,11 @@ footer p {
     }
 }
 
-@media (max-width: 768px) {
-    main {
-        padding: 15px;
-    }
-
+/* Specific Media Query for Small Screens (e.g., 480px - 500px) */
+@media (max-width: 500px) and (min-width: 321px) {
     #game-board {
         width: 90vw;
-        height: 70vw;
+        height: 90vw;
         gap: 4px;
     }
 
@@ -393,19 +391,16 @@ footer p {
     }
 }
 
-@media (max-width: 480px) {
+/* Additional Media Query for Very Small Screens (Below 320px) */
+@media (max-width: 320px) {
     #game-board {
         width: 95vw;
-        height: 80vw;
+        height: 95vw;
         gap: 2px;
     }
 
     .tile {
         font-size: 3.5em;
-    }
-
-    footer {
-        padding: 10px;
     }
 
     #start-button {
