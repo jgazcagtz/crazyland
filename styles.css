@@ -97,6 +97,7 @@ main {
 
 /* Start Button Styles */
 #start-button {
+  font-family: "Silkscreen", sans-serif;
     position: absolute;
     top: 50%;
     left: 50%;
