@@ -168,10 +168,13 @@ const bgMusicTracks = [
 
 let currentMusicIndex = 0;
 
-// Function to play background music
+// Function to play background music with random track selection
 function playBackgroundMusic() {
+    // Select a random track index each time
+    currentMusicIndex = Math.floor(Math.random() * bgMusicTracks.length);
     const currentTrack = bgMusicTracks[currentMusicIndex];
     currentTrack.volume = 0.5;
+    
     const playPromise = currentTrack.play();
 
     if (playPromise !== undefined) {
@@ -179,15 +182,13 @@ function playBackgroundMusic() {
             console.log('Background music is playing.');
         }).catch(error => {
             console.error('Background music playback failed:', error);
-            // Optionally, notify the user or retry playing after some time
         });
     }
 
-    currentTrack.addEventListener('ended', () => {
-        currentMusicIndex = (currentMusicIndex + 1) % bgMusicTracks.length;
-        playBackgroundMusic();
-    });
+    // Set up event listener to play the next random track when the current one ends
+    currentTrack.addEventListener('ended', playBackgroundMusic);
 }
+
 
 // Game Variables
 let numRows = 8;
