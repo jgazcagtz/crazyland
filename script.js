@@ -208,6 +208,11 @@ class GameManager {
             this.state.currentEmojiGroupIndex = Math.floor(Math.random() * emojiGroups.length);
         } while (!isInitial && this.state.currentEmojiGroupIndex === previousIndex);
         this.state.currentEmojiGroup = emojiGroups[this.state.currentEmojiGroupIndex];
+        
+        // Ensure the emoji group is valid and has content
+        if (!this.state.currentEmojiGroup || this.state.currentEmojiGroup.length === 0) {
+            this.state.currentEmojiGroup = emojiGroups[0]; // Fallback to first group
+        }
     }
 
     createBoard() {
@@ -216,12 +221,21 @@ class GameManager {
             let currentRow = [];
             for (let col = 0; col < 8; col++) {
                 let emoji;
+                let attempts = 0;
+                const maxAttempts = 50;
+                
                 do {
                     emoji = this.state.currentEmojiGroup[Math.floor(Math.random() * this.state.currentEmojiGroup.length)];
+                    attempts++;
                 } while (
-                    (col >= 2 && emoji === currentRow[col - 1] && emoji === currentRow[col - 2]) ||
-                    (row >= 2 && emoji === newBoard[row - 1][col] && emoji === newBoard[row - 2][col])
+                    attempts < maxAttempts && (
+                        (col >= 2 && emoji === currentRow[col - 1] && emoji === currentRow[col - 2]) ||
+                        (row >= 2 && emoji === newBoard[row - 1][col] && emoji === newBoard[row - 2][col]) ||
+                        (row >= 2 && col >= 2 && emoji === newBoard[row - 1][col - 1] && emoji === newBoard[row - 2][col - 2]) ||
+                        (row >= 2 && col < 6 && emoji === newBoard[row - 1][col + 1] && emoji === newBoard[row - 2][col + 2])
+                    )
                 );
+                
                 currentRow.push(emoji);
             }
             newBoard.push(currentRow);
@@ -239,7 +253,7 @@ class GameManager {
                 tile.classList.add('tile');
                 tile.setAttribute('data-row', rowIndex);
                 tile.setAttribute('data-col', colIndex);
-                tile.innerText = emoji;
+                tile.innerText = emoji || '❓'; // Fallback emoji if none is set
                 tile.addEventListener('click', (e) => this.handleTileClick(e));
                 gameBoard.appendChild(tile);
             });
@@ -290,7 +304,8 @@ class GameManager {
     isAdjacent(sel1, sel2) {
         const dx = Math.abs(sel1.col - sel2.col);
         const dy = Math.abs(sel1.row - sel2.row);
-        return (dx === 1 && dy === 0) || (dx === 0 && dy === 1);
+        // Allow horizontal, vertical, and diagonal adjacent movement
+        return (dx === 1 && dy === 0) || (dx === 0 && dy === 1) || (dx === 1 && dy === 1);
     }
 
     swapTiles(sel1, sel2) {
@@ -303,9 +318,19 @@ class GameManager {
         tile1.classList.add('swapping');
         tile2.classList.add('swapping');
         
-        // Enhanced swap animation
-        tile1.style.transform = 'scale(1.1) rotate(5deg)';
-        tile2.style.transform = 'scale(1.1) rotate(-5deg)';
+        // Enhanced swap animation with diagonal support
+        const dx = Math.abs(parseInt(tile1.getAttribute('data-col')) - parseInt(tile2.getAttribute('data-col')));
+        const dy = Math.abs(parseInt(tile1.getAttribute('data-row')) - parseInt(tile2.getAttribute('data-row')));
+        
+        if (dx === 1 && dy === 1) {
+            // Diagonal swap animation
+            tile1.style.transform = 'scale(1.1) rotate(15deg)';
+            tile2.style.transform = 'scale(1.1) rotate(-15deg)';
+        } else {
+            // Horizontal/vertical swap animation
+            tile1.style.transform = 'scale(1.1) rotate(5deg)';
+            tile2.style.transform = 'scale(1.1) rotate(-5deg)';
+        }
         
         setTimeout(() => {
             tile1.classList.remove('swapping');
@@ -433,14 +458,21 @@ class GameManager {
             for (let col = 0; col < 8; col++) {
                 if (this.state.board[row][col] === null) {
                     let emoji;
+                    let attempts = 0;
+                    const maxAttempts = 50;
+                    
                     do {
                         emoji = this.state.currentEmojiGroup[Math.floor(Math.random() * this.state.currentEmojiGroup.length)];
+                        attempts++;
                     } while (
-                        (col >= 2 && emoji === this.state.board[row][col - 1] && emoji === this.state.board[row][col - 2]) ||
-                        (row >= 2 && emoji === this.state.board[row - 1][col] && emoji === this.state.board[row - 2][col]) ||
-                        (row >= 2 && col >= 2 && emoji === this.state.board[row - 1][col - 1] && emoji === this.state.board[row - 2][col - 2]) ||
-                        (row >= 2 && col < 6 && emoji === this.state.board[row - 1][col + 1] && emoji === this.state.board[row - 2][col + 2])
+                        attempts < maxAttempts && (
+                            (col >= 2 && emoji === this.state.board[row][col - 1] && emoji === this.state.board[row][col - 2]) ||
+                            (row >= 2 && emoji === this.state.board[row - 1][col] && emoji === this.state.board[row - 2][col]) ||
+                            (row >= 2 && col >= 2 && emoji === this.state.board[row - 1][col - 1] && emoji === this.state.board[row - 2][col - 2]) ||
+                            (row >= 2 && col < 6 && emoji === this.state.board[row - 1][col + 1] && emoji === this.state.board[row - 2][col + 2])
+                        )
                     );
+                    
                     this.state.board[row][col] = emoji;
                 }
             }
@@ -829,6 +861,14 @@ const emojiGroups = [
     // Emoji Letters & Symbols
     ['❤️', '⭐', '✨', '💥', '🔥', '❄️', '💧', '🌟', '🎶', '🌀'],
 ];
+
+// Validate emoji groups
+console.log('Emoji groups loaded:', emojiGroups.length);
+emojiGroups.forEach((group, index) => {
+    if (!group || group.length === 0) {
+        console.warn(`Empty emoji group at index ${index}`);
+    }
+});
 
 // ===== INITIALIZE GAME =====
 document.addEventListener('DOMContentLoaded', () => {
