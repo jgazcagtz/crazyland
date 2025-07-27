@@ -3,15 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="CrazyLand - An exciting emoji puzzle game with stunning visuals and addictive gameplay">
-    <title>🌟 CrazyLand Emoji Puzzle Game 👾</title>
-    
-    <!-- Preconnect to external resources -->
+    <meta name="description" content="CrazyLand - An exciting match-3 puzzle game with beautiful graphics and engaging gameplay. Match emojis, create combos, and advance through levels!">
+    <title>CrazyLand - Match-3 Puzzle Game</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Stylesheets -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Fredoka+One&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     
     <!-- Google AdSense -->
@@ -28,25 +24,24 @@
         </div>
     </div>
 
-    <!-- Game Container -->
+    <!-- Main Game Container -->
     <div id="game-container" class="game-container" style="display: none;">
-        <!-- Header Section -->
+        <!-- Header -->
         <header class="game-header">
             <div class="header-content">
-                <h1 class="game-title">
-                    <span class="title-icon">🌟</span>
+                <div class="game-title">
+                    <span class="title-icon">🎮</span>
                     <span class="title-text">CrazyLand</span>
-                    <span class="title-icon">👾</span>
-                </h1>
+                </div>
                 
                 <div class="game-stats">
                     <div class="stat-item">
-                        <span class="stat-label">Level</span>
-                        <span class="stat-value" id="level">1</span>
-                    </div>
-                    <div class="stat-item">
                         <span class="stat-label">Score</span>
                         <span class="stat-value" id="score">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Level</span>
+                        <span class="stat-value" id="level">1</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-label">Moves</span>
@@ -58,131 +53,160 @@
                         <span class="timer-unit">s</span>
                     </div>
                 </div>
-
-                <!-- Power-Ups Section -->
-                <div id="power-ups" class="power-ups-container" style="display: none;">
-                    <h3 class="power-ups-title">Power-Ups</h3>
-                    <div class="power-ups-grid" id="power-ups-grid"></div>
-                </div>
             </div>
         </header>
+
+        <!-- Power-ups Section -->
+        <div id="power-ups" class="power-ups-container">
+            <div class="power-ups-title">🎯 Power-ups</div>
+            <div class="power-ups-grid">
+                <div class="power-up">💥</div>
+                <div class="power-up">⚡</div>
+                <div class="power-up">🎁</div>
+                <div class="power-up">🌟</div>
+            </div>
+        </div>
 
         <!-- Main Game Area -->
         <main class="game-main">
             <!-- Start Screen -->
             <div id="start-screen" class="start-screen">
                 <div class="start-content">
-                    <h2 class="start-title">Welcome to CrazyLand!</h2>
-                    <p class="start-description">Match emojis, create combos, and unlock amazing power-ups!</p>
+                    <h1 class="start-title">Welcome to CrazyLand! 🎮</h1>
+                    <p class="start-description">
+                        Match colorful emojis, create amazing combos, and advance through exciting levels! 
+                        Can you become the ultimate CrazyLand champion?
+                    </p>
                     
                     <div class="start-buttons">
                         <button id="start-button" class="btn btn-primary">
-                            <span class="btn-icon">🛸</span>
-                            <span class="btn-text">Start Adventure</span>
                             <span class="btn-icon">🚀</span>
+                            <span class="btn-text">Start Adventure</span>
                         </button>
-                        
                         <button id="tutorial-button" class="btn btn-secondary">
                             <span class="btn-icon">📖</span>
                             <span class="btn-text">How to Play</span>
                         </button>
                     </div>
-
+                    
                     <div class="game-features">
                         <div class="feature">
-                            <span class="feature-icon">🎯</span>
-                            <span class="feature-text">Match 3+ Emojis</span>
+                            <div class="feature-icon">🎯</div>
+                            <div class="feature-text">Match 3+ Emojis</div>
                         </div>
                         <div class="feature">
-                            <span class="feature-icon">⚡</span>
-                            <span class="feature-text">Special Power-Ups</span>
+                            <div class="feature-icon">⚡</div>
+                            <div class="feature-text">Create Combos</div>
                         </div>
                         <div class="feature">
-                            <span class="feature-icon">🏆</span>
-                            <span class="feature-text">Level Progression</span>
+                            <div class="feature-icon">🏆</div>
+                            <div class="feature-text">Level Up</div>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">🎵</div>
+                            <div class="feature-text">Great Music</div>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">📱</div>
+                            <div class="feature-text">Mobile Ready</div>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">🎨</div>
+                            <div class="feature-text">Beautiful Design</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Game Board -->
+            <!-- Game Board Container -->
             <div id="game-board-container" class="game-board-container" style="display: none;">
                 <div class="board-wrapper">
                     <div id="game-board" class="game-board"></div>
-                    <canvas id="particle-canvas" class="particle-canvas"></canvas>
                 </div>
-            </div>
-
-            <!-- Game Controls -->
-            <div class="game-controls">
-                <button id="pause-button" class="btn btn-control" title="Pause Game">
-                    <span class="btn-icon">⏸️</span>
-                </button>
-                <button id="restart-button" class="btn btn-control" title="Restart Game">
-                    <span class="btn-icon">🔄</span>
-                </button>
-                <button id="sound-toggle" class="btn btn-control" title="Toggle Sound">
-                    <span class="btn-icon">🔊</span>
-                </button>
+                
+                <!-- Game Controls -->
+                <div class="game-controls">
+                    <button id="pause-button" class="btn btn-control" title="Pause Game">
+                        <span class="btn-icon">⏸️</span>
+                    </button>
+                    <button id="restart-button" class="btn btn-control" title="Restart Game">
+                        <span class="btn-icon">🔄</span>
+                    </button>
+                    <button id="sound-toggle" class="btn btn-control" title="Toggle Sound">
+                        <span class="btn-icon">🔊</span>
+                    </button>
+                </div>
             </div>
         </main>
 
         <!-- Footer -->
         <footer class="game-footer">
             <div class="footer-content">
+                <div class="footer-text">© 2024 CrazyLand - Made with ❤️ for fun gaming!</div>
                 <button id="help-button" class="btn btn-help">
                     <span class="btn-icon">❓</span>
                     <span class="btn-text">Help</span>
                 </button>
-                <p class="footer-text">JG 2024 🛸 Made with ❤️</p>
             </div>
         </footer>
     </div>
 
+    <!-- Particle Canvas -->
+    <canvas id="particle-canvas" class="particle-canvas"></canvas>
+
     <!-- Tutorial Modal -->
     <div id="tutorial-modal" class="modal">
         <div class="modal-content tutorial-content">
-            <button class="modal-close" id="close-tutorial" aria-label="Close tutorial">
-                <span>&times;</span>
-            </button>
-            
+            <button class="modal-close" id="close-tutorial">&times;</button>
             <div class="tutorial-header">
-                <h2>How to Play CrazyLand</h2>
-                <p>Master the art of emoji matching!</p>
+                <h2>🎮 How to Play CrazyLand</h2>
+                <p>Master the art of matching and become a CrazyLand champion!</p>
             </div>
-
+            
             <div class="tutorial-sections">
                 <div class="tutorial-section">
-                    <h3>🎯 Basic Gameplay</h3>
+                    <h3>🎯 Basic Rules</h3>
                     <ul>
-                        <li><strong>Swap Tiles:</strong> Click on any emoji and then on an adjacent one to swap them</li>
-                        <li><strong>Create Matches:</strong> Form horizontal, vertical, or diagonal lines of 3+ identical emojis</li>
-                        <li><strong>Score Points:</strong> Each match earns points and special bonuses</li>
+                        <li><strong>Match 3 or more</strong> identical emojis in a row or column</li>
+                        <li><strong>Click adjacent tiles</strong> to swap them</li>
+                        <li><strong>Create matches</strong> to score points and clear tiles</li>
+                        <li><strong>Complete levels</strong> by reaching the target score</li>
                     </ul>
                 </div>
-
+                
                 <div class="tutorial-section">
-                    <h3>⚡ Power-Ups & Specials</h3>
+                    <h3>⚡ Scoring System</h3>
                     <ul>
-                        <li><strong>Combo Multiplier:</strong> Chain matches for bonus points</li>
-                        <li><strong>Special Tiles:</strong> Create 4+ matches for explosive effects</li>
-                        <li><strong>Level Progression:</strong> Reach score thresholds to advance</li>
+                        <li><strong>Base Score:</strong> 10 points per matched tile</li>
+                        <li><strong>Combo Bonus:</strong> +5 points per combo level</li>
+                        <li><strong>Level Progression:</strong> Score 500 × level to advance</li>
+                        <li><strong>Time Bonus:</strong> Extra points for quick matches</li>
                     </ul>
                 </div>
-
+                
                 <div class="tutorial-section">
-                    <h3>🏆 Scoring System</h3>
+                    <h3>🎮 Game Controls</h3>
                     <ul>
-                        <li><strong>3-Match:</strong> 10 points</li>
-                        <li><strong>4-Match:</strong> 25 points + special effect</li>
-                        <li><strong>5+ Match:</strong> 50 points + mega effect</li>
-                        <li><strong>Combo Bonus:</strong> +5 points per additional match</li>
+                        <li><strong>Mouse/Touch:</strong> Click tiles to select and swap</li>
+                        <li><strong>Pause:</strong> Press ESC or click pause button</li>
+                        <li><strong>Restart:</strong> Press R or click restart button</li>
+                        <li><strong>Sound:</strong> Toggle audio with sound button</li>
+                    </ul>
+                </div>
+                
+                <div class="tutorial-section">
+                    <h3>🏆 Tips & Tricks</h3>
+                    <ul>
+                        <li><strong>Plan ahead:</strong> Look for potential matches</li>
+                        <li><strong>Create combos:</strong> Chain matches for bonus points</li>
+                        <li><strong>Watch the timer:</strong> Manage your time wisely</li>
+                        <li><strong>Use moves efficiently:</strong> Don't waste moves on impossible matches</li>
                     </ul>
                 </div>
             </div>
-
+            
             <div class="tutorial-footer">
-                <p><strong>Need help?</strong> Contact us at <a href="mailto:gascagtz@gmail.com">gascagtz@gmail.com</a></p>
+                <p>Ready to start your adventure? <a href="#" onclick="document.getElementById('start-button').click(); document.getElementById('tutorial-modal').style.display='none';">Click here to begin!</a></p>
             </div>
         </div>
     </div>
@@ -192,9 +216,9 @@
         <div class="modal-content game-over-content">
             <div class="game-over-header">
                 <h2 id="game-over-title">Game Over!</h2>
-                <p id="game-over-message">Thanks for playing!</p>
+                <p>Great job! Here's how you performed:</p>
             </div>
-
+            
             <div class="game-over-stats">
                 <div class="final-stat">
                     <span class="stat-label">Final Score</span>
@@ -209,7 +233,7 @@
                     <span class="stat-value" id="final-matches">0</span>
                 </div>
             </div>
-
+            
             <div class="game-over-actions">
                 <button id="play-again-btn" class="btn btn-primary">
                     <span class="btn-icon">🔄</span>
@@ -226,23 +250,24 @@
     <!-- Pause Modal -->
     <div id="pause-modal" class="modal">
         <div class="modal-content pause-content">
-            <h2>Game Paused</h2>
-            <p>Take a break or continue your adventure!</p>
+            <div class="pause-header">
+                <h2>⏸️ Game Paused</h2>
+                <p>Take a break or continue your adventure!</p>
+            </div>
             
             <div class="pause-actions">
                 <button id="resume-btn" class="btn btn-primary">
                     <span class="btn-icon">▶️</span>
-                    <span class="btn-text">Resume</span>
+                    <span class="btn-text">Resume Game</span>
                 </button>
                 <button id="restart-pause-btn" class="btn btn-secondary">
                     <span class="btn-icon">🔄</span>
-                    <span class="btn-text">Restart</span>
+                    <span class="btn-text">Restart Game</span>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript -->
     <script src="script.js"></script>
 </body>
 </html>

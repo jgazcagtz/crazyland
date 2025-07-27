@@ -302,10 +302,17 @@ class GameManager {
     animateSwap(tile1, tile2) {
         tile1.classList.add('swapping');
         tile2.classList.add('swapping');
+        
+        // Enhanced swap animation
+        tile1.style.transform = 'scale(1.1) rotate(5deg)';
+        tile2.style.transform = 'scale(1.1) rotate(-5deg)';
+        
         setTimeout(() => {
             tile1.classList.remove('swapping');
             tile2.classList.remove('swapping');
-        }, 300);
+            tile1.style.transform = '';
+            tile2.style.transform = '';
+        }, 400);
     }
 
     checkMatches() {
@@ -339,6 +346,30 @@ class GameManager {
             }
         }
 
+        // Check diagonal matches (top-left to bottom-right)
+        for (let row = 0; row < 6; row++) {
+            for (let col = 0; col < 6; col++) {
+                let emoji = this.state.board[row][col];
+                if (emoji && emoji === this.state.board[row + 1][col + 1] && emoji === this.state.board[row + 2][col + 2]) {
+                    matched.push({ row, col });
+                    matched.push({ row: row + 1, col: col + 1 });
+                    matched.push({ row: row + 2, col: col + 2 });
+                }
+            }
+        }
+
+        // Check diagonal matches (top-right to bottom-left)
+        for (let row = 0; row < 6; row++) {
+            for (let col = 2; col < 8; col++) {
+                let emoji = this.state.board[row][col];
+                if (emoji && emoji === this.state.board[row + 1][col - 1] && emoji === this.state.board[row + 2][col - 2]) {
+                    matched.push({ row, col });
+                    matched.push({ row: row + 1, col: col - 1 });
+                    matched.push({ row: row + 2, col: col - 2 });
+                }
+            }
+        }
+
         // Remove duplicates
         matched = matched.filter(
             (v, i, a) => a.findIndex((t) => t.row === v.row && t.col === v.col) === i
@@ -355,10 +386,14 @@ class GameManager {
             }
         }
 
-        matches.forEach((match) => {
+        matches.forEach((match, index) => {
             const { row, col } = match;
             this.state.board[row][col] = null;
-            this.createParticles(col * 80 + 40, row * 80 + 40, '#ff69b4');
+            
+            // Enhanced particle effects with delay for cascade effect
+            setTimeout(() => {
+                this.createParticles(col * 80 + 40, row * 80 + 40, '#ff69b4');
+            }, index * 50);
             
             // Calculate score based on match length
             const matchLength = matches.filter(m => m.row === row && m.col === col).length;
@@ -369,8 +404,14 @@ class GameManager {
         });
 
         this.state.comboMultiplier++;
-        this.collapseBoard();
-        this.fillBoard();
+        
+        // Enhanced collapse and fill with smooth animations
+        setTimeout(() => {
+            this.collapseBoard();
+            setTimeout(() => {
+                this.fillBoard();
+            }, 200);
+        }, 300);
     }
 
     collapseBoard() {
@@ -396,7 +437,9 @@ class GameManager {
                         emoji = this.state.currentEmojiGroup[Math.floor(Math.random() * this.state.currentEmojiGroup.length)];
                     } while (
                         (col >= 2 && emoji === this.state.board[row][col - 1] && emoji === this.state.board[row][col - 2]) ||
-                        (row >= 2 && emoji === this.state.board[row - 1][col] && emoji === this.state.board[row - 2][col])
+                        (row >= 2 && emoji === this.state.board[row - 1][col] && emoji === this.state.board[row - 2][col]) ||
+                        (row >= 2 && col >= 2 && emoji === this.state.board[row - 1][col - 1] && emoji === this.state.board[row - 2][col - 2]) ||
+                        (row >= 2 && col < 6 && emoji === this.state.board[row - 1][col + 1] && emoji === this.state.board[row - 2][col + 2])
                     );
                     this.state.board[row][col] = emoji;
                 }
@@ -404,7 +447,7 @@ class GameManager {
         }
 
         if (this.findMatches().length > 0) {
-            setTimeout(() => this.processMatches(), 300);
+            setTimeout(() => this.processMatches(), 200);
         } else {
             this.state.comboMultiplier = 1;
         }
@@ -571,7 +614,7 @@ class GameManager {
 
     // Particle system
     createParticles(x, y, color) {
-        for (let i = 0; i < 15; i++) {
+        for (let i = 0; i < 20; i++) {
             this.state.particlesArray.push(new Particle(x, y, color));
         }
     }
@@ -598,21 +641,29 @@ class Particle {
     constructor(x, y, color) {
         this.x = x;
         this.y = y;
-        this.radius = Math.random() * 3 + 2;
+        this.radius = Math.random() * 4 + 2;
         this.color = color;
-        this.speed = Math.random() * 2 + 1;
+        this.speed = Math.random() * 3 + 2;
         this.angle = Math.random() * 2 * Math.PI;
         this.velocity = {
             x: Math.cos(this.angle) * this.speed,
             y: Math.sin(this.angle) * this.speed
         };
         this.alpha = 1;
+        this.gravity = 0.1;
+        this.friction = 0.98;
+        this.life = 1;
+        this.decay = 0.02;
     }
 
     update() {
+        this.velocity.x *= this.friction;
+        this.velocity.y += this.gravity;
         this.x += this.velocity.x;
         this.y += this.velocity.y;
-        this.alpha -= 0.01;
+        this.life -= this.decay;
+        this.alpha = this.life;
+        this.radius *= 0.99;
     }
 
     draw(ctx) {
@@ -623,6 +674,16 @@ class Particle {
         ctx.fillStyle = this.color;
         ctx.fill();
         ctx.closePath();
+        
+        // Add glow effect
+        ctx.shadowColor = this.color;
+        ctx.shadowBlur = 10;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius * 0.5, 0, Math.PI * 2);
+        ctx.fillStyle = 'white';
+        ctx.fill();
+        ctx.closePath();
+        
         ctx.restore();
     }
 }
