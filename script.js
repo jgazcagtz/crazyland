@@ -211,12 +211,21 @@ class GameManager {
         
         // Ensure the emoji group is valid and has content
         if (!this.state.currentEmojiGroup || this.state.currentEmojiGroup.length === 0) {
+            console.warn('Invalid emoji group, using fallback');
             this.state.currentEmojiGroup = emojiGroups[0]; // Fallback to first group
         }
+        
+        console.log('Current emoji group:', this.state.currentEmojiGroupIndex, this.state.currentEmojiGroup);
     }
 
     createBoard() {
         let newBoard = [];
+        
+        // Ensure we have a valid emoji group
+        if (!this.state.currentEmojiGroup || this.state.currentEmojiGroup.length === 0) {
+            this.updateEmojiGroup(true);
+        }
+        
         for (let row = 0; row < 8; row++) {
             let currentRow = [];
             for (let col = 0; col < 8; col++) {
@@ -236,6 +245,11 @@ class GameManager {
                     )
                 );
                 
+                // Ensure we have a valid emoji
+                if (!emoji) {
+                    emoji = this.state.currentEmojiGroup[0];
+                }
+                
                 currentRow.push(emoji);
             }
             newBoard.push(currentRow);
@@ -253,7 +267,11 @@ class GameManager {
                 tile.classList.add('tile');
                 tile.setAttribute('data-row', rowIndex);
                 tile.setAttribute('data-col', colIndex);
-                tile.innerText = emoji || '❓'; // Fallback emoji if none is set
+                
+                // Ensure we have a valid emoji, use fallback if needed
+                const displayEmoji = emoji && emoji !== null ? emoji : '❓';
+                tile.innerText = displayEmoji;
+                
                 tile.addEventListener('click', (e) => this.handleTileClick(e));
                 gameBoard.appendChild(tile);
             });
@@ -276,7 +294,10 @@ class GameManager {
                 this.swapTiles(this.state.firstSelection, secondSelection);
                 this.animateSwap(this.state.firstSelection.element, secondSelection.element);
                 
-                if (this.checkMatches()) {
+                // Check for matches after swap
+                const hasMatches = this.checkMatches();
+                
+                if (hasMatches) {
                     this.state.isAnimating = true;
                     setTimeout(() => {
                         this.processMatches();
@@ -291,8 +312,11 @@ class GameManager {
                         }
                     }, 600);
                 } else {
-                    this.swapTiles(this.state.firstSelection, secondSelection);
-                    this.animateSwap(secondSelection.element, this.state.firstSelection.element);
+                    // No matches, swap back
+                    setTimeout(() => {
+                        this.swapTiles(this.state.firstSelection, secondSelection);
+                        this.animateSwap(secondSelection.element, this.state.firstSelection.element);
+                    }, 400);
                 }
             }
             this.state.firstSelection.element.classList.remove('selected');
@@ -341,7 +365,8 @@ class GameManager {
     }
 
     checkMatches() {
-        return this.findMatches().length > 0;
+        const matches = this.findMatches();
+        return matches.length > 0;
     }
 
     findMatches() {
@@ -400,6 +425,7 @@ class GameManager {
             (v, i, a) => a.findIndex((t) => t.row === v.row && t.col === v.col) === i
         );
 
+        console.log('Found matches:', matched);
         return matched;
     }
 
@@ -454,6 +480,11 @@ class GameManager {
     }
 
     fillBoard() {
+        // Ensure we have a valid emoji group
+        if (!this.state.currentEmojiGroup || this.state.currentEmojiGroup.length === 0) {
+            this.updateEmojiGroup(true);
+        }
+        
         for (let row = 0; row < 8; row++) {
             for (let col = 0; col < 8; col++) {
                 if (this.state.board[row][col] === null) {
@@ -472,6 +503,11 @@ class GameManager {
                             (row >= 2 && col < 6 && emoji === this.state.board[row - 1][col + 1] && emoji === this.state.board[row - 2][col + 2])
                         )
                     );
+                    
+                    // Ensure we have a valid emoji
+                    if (!emoji) {
+                        emoji = this.state.currentEmojiGroup[0];
+                    }
                     
                     this.state.board[row][col] = emoji;
                 }
