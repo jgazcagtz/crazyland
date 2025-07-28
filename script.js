@@ -290,6 +290,17 @@ class GameManager {
                 gameBoard.appendChild(tile);
             });
         });
+        
+        // Debug: log current board state
+        this.debugBoardState();
+    }
+
+    debugBoardState() {
+        console.log('=== CURRENT BOARD STATE ===');
+        this.state.board.forEach((row, rowIndex) => {
+            console.log(`Row ${rowIndex}:`, row.map(emoji => emoji || 'null').join(' '));
+        });
+        console.log('=== END BOARD STATE ===');
     }
 
     handleTileClick(e) {
@@ -304,12 +315,29 @@ class GameManager {
             tile.classList.add('selected');
         } else {
             const secondSelection = { row, col, element: tile };
+            
+            // Check if it's the same tile
+            if (this.state.firstSelection.row === secondSelection.row && this.state.firstSelection.col === secondSelection.col) {
+                // Deselect if clicking the same tile
+                this.state.firstSelection.element.classList.remove('selected');
+                this.state.firstSelection = null;
+                return;
+            }
+            
             if (this.isAdjacent(this.state.firstSelection, secondSelection)) {
+                console.log('Swapping tiles:', this.state.firstSelection, secondSelection);
+                
+                // Store original values for potential revert
+                const originalFirst = this.state.board[this.state.firstSelection.row][this.state.firstSelection.col];
+                const originalSecond = this.state.board[secondSelection.row][secondSelection.col];
+                
+                // Perform the swap
                 this.swapTiles(this.state.firstSelection, secondSelection);
                 this.animateSwap(this.state.firstSelection.element, secondSelection.element);
                 
                 // Check for matches after swap
                 const hasMatches = this.checkMatches();
+                console.log('Has matches after swap:', hasMatches);
                 
                 if (hasMatches) {
                     this.state.isAnimating = true;
@@ -326,13 +354,17 @@ class GameManager {
                         }
                     }, 600);
                 } else {
-                    // No matches, swap back
+                    // No matches, swap back after animation
                     setTimeout(() => {
+                        console.log('No matches found, reverting swap');
                         this.swapTiles(this.state.firstSelection, secondSelection);
                         this.animateSwap(secondSelection.element, this.state.firstSelection.element);
                     }, 400);
                 }
+            } else {
+                console.log('Tiles not adjacent');
             }
+            
             this.state.firstSelection.element.classList.remove('selected');
             this.state.firstSelection = null;
             this.decrementMove();
@@ -343,13 +375,19 @@ class GameManager {
         const dx = Math.abs(sel1.col - sel2.col);
         const dy = Math.abs(sel1.row - sel2.row);
         // Allow horizontal, vertical, and diagonal adjacent movement
-        return (dx === 1 && dy === 0) || (dx === 0 && dy === 1) || (dx === 1 && dy === 1);
+        const isAdjacent = (dx === 1 && dy === 0) || (dx === 0 && dy === 1) || (dx === 1 && dy === 1);
+        console.log('Adjacency check:', { dx, dy, isAdjacent });
+        return isAdjacent;
     }
 
     swapTiles(sel1, sel2) {
         const temp = this.state.board[sel1.row][sel1.col];
         this.state.board[sel1.row][sel1.col] = this.state.board[sel2.row][sel2.col];
         this.state.board[sel2.row][sel2.col] = temp;
+        console.log('Swapped tiles:', {
+            from: { row: sel1.row, col: sel1.col, value: this.state.board[sel2.row][sel2.col] },
+            to: { row: sel2.row, col: sel2.col, value: this.state.board[sel1.row][sel1.col] }
+        });
     }
 
     animateSwap(tile1, tile2) {
@@ -380,7 +418,9 @@ class GameManager {
 
     checkMatches() {
         const matches = this.findMatches();
-        return matches.length > 0;
+        const hasMatches = matches.length > 0;
+        console.log('Check matches result:', hasMatches, 'matches found:', matches.length);
+        return hasMatches;
     }
 
     findMatches() {
@@ -394,6 +434,7 @@ class GameManager {
                     matched.push({ row, col });
                     matched.push({ row, col: col + 1 });
                     matched.push({ row, col: col + 2 });
+                    console.log('Horizontal match found at row', row, 'col', col, 'emoji:', emoji);
                 }
             }
         }
@@ -406,6 +447,7 @@ class GameManager {
                     matched.push({ row, col });
                     matched.push({ row: row + 1, col });
                     matched.push({ row: row + 2, col });
+                    console.log('Vertical match found at row', row, 'col', col, 'emoji:', emoji);
                 }
             }
         }
@@ -418,6 +460,7 @@ class GameManager {
                     matched.push({ row, col });
                     matched.push({ row: row + 1, col: col + 1 });
                     matched.push({ row: row + 2, col: col + 2 });
+                    console.log('Diagonal match (TL-BR) found at row', row, 'col', col, 'emoji:', emoji);
                 }
             }
         }
@@ -430,6 +473,7 @@ class GameManager {
                     matched.push({ row, col });
                     matched.push({ row: row + 1, col: col - 1 });
                     matched.push({ row: row + 2, col: col - 2 });
+                    console.log('Diagonal match (TR-BL) found at row', row, 'col', col, 'emoji:', emoji);
                 }
             }
         }
@@ -439,7 +483,7 @@ class GameManager {
             (v, i, a) => a.findIndex((t) => t.row === v.row && t.col === v.col) === i
         );
 
-        console.log('Found matches:', matched);
+        console.log('Total matches found:', matched.length, matched);
         return matched;
     }
 
