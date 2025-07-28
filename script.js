@@ -207,12 +207,22 @@ class GameManager {
         do {
             this.state.currentEmojiGroupIndex = Math.floor(Math.random() * emojiGroups.length);
         } while (!isInitial && this.state.currentEmojiGroupIndex === previousIndex);
+        
+        // Ensure we have a valid emoji group
         this.state.currentEmojiGroup = emojiGroups[this.state.currentEmojiGroupIndex];
         
-        // Ensure the emoji group is valid and has content
+        // Validate the emoji group
         if (!this.state.currentEmojiGroup || this.state.currentEmojiGroup.length === 0) {
             console.warn('Invalid emoji group, using fallback');
             this.state.currentEmojiGroup = emojiGroups[0]; // Fallback to first group
+        }
+        
+        // Ensure all emojis in the group are valid
+        this.state.currentEmojiGroup = this.state.currentEmojiGroup.filter(emoji => emoji && emoji.trim() !== '');
+        
+        if (this.state.currentEmojiGroup.length === 0) {
+            console.error('No valid emojis found, using default group');
+            this.state.currentEmojiGroup = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯'];
         }
         
         console.log('Current emoji group:', this.state.currentEmojiGroupIndex, this.state.currentEmojiGroup);
@@ -234,7 +244,8 @@ class GameManager {
                 const maxAttempts = 50;
                 
                 do {
-                    emoji = this.state.currentEmojiGroup[Math.floor(Math.random() * this.state.currentEmojiGroup.length)];
+                    const randomIndex = Math.floor(Math.random() * this.state.currentEmojiGroup.length);
+                    emoji = this.state.currentEmojiGroup[randomIndex];
                     attempts++;
                 } while (
                     attempts < maxAttempts && (
@@ -246,8 +257,8 @@ class GameManager {
                 );
                 
                 // Ensure we have a valid emoji
-                if (!emoji) {
-                    emoji = this.state.currentEmojiGroup[0];
+                if (!emoji || emoji.trim() === '') {
+                    emoji = this.state.currentEmojiGroup[0] || '🐶';
                 }
                 
                 currentRow.push(emoji);
@@ -269,9 +280,12 @@ class GameManager {
                 tile.setAttribute('data-col', colIndex);
                 
                 // Ensure we have a valid emoji, use fallback if needed
-                const displayEmoji = emoji && emoji !== null ? emoji : '❓';
-                tile.innerText = displayEmoji;
+                let displayEmoji = emoji;
+                if (!displayEmoji || displayEmoji === null || displayEmoji === undefined || displayEmoji.trim() === '') {
+                    displayEmoji = this.state.currentEmojiGroup[0] || '🐶';
+                }
                 
+                tile.innerText = displayEmoji;
                 tile.addEventListener('click', (e) => this.handleTileClick(e));
                 gameBoard.appendChild(tile);
             });
@@ -493,7 +507,8 @@ class GameManager {
                     const maxAttempts = 50;
                     
                     do {
-                        emoji = this.state.currentEmojiGroup[Math.floor(Math.random() * this.state.currentEmojiGroup.length)];
+                        const randomIndex = Math.floor(Math.random() * this.state.currentEmojiGroup.length);
+                        emoji = this.state.currentEmojiGroup[randomIndex];
                         attempts++;
                     } while (
                         attempts < maxAttempts && (
@@ -505,8 +520,8 @@ class GameManager {
                     );
                     
                     // Ensure we have a valid emoji
-                    if (!emoji) {
-                        emoji = this.state.currentEmojiGroup[0];
+                    if (!emoji || emoji.trim() === '') {
+                        emoji = this.state.currentEmojiGroup[0] || '🐶';
                     }
                     
                     this.state.board[row][col] = emoji;
@@ -903,8 +918,31 @@ console.log('Emoji groups loaded:', emojiGroups.length);
 emojiGroups.forEach((group, index) => {
     if (!group || group.length === 0) {
         console.warn(`Empty emoji group at index ${index}`);
+    } else {
+        console.log(`Group ${index}: ${group.length} emojis - ${group.slice(0, 3).join(' ')}...`);
     }
 });
+
+// Test function to validate emoji groups
+function validateEmojiGroups() {
+    console.log('=== EMOJI GROUP VALIDATION ===');
+    emojiGroups.forEach((group, index) => {
+        if (!group || group.length === 0) {
+            console.error(`❌ Group ${index}: Empty or invalid`);
+        } else {
+            const validEmojis = group.filter(emoji => emoji && emoji.trim() !== '');
+            if (validEmojis.length === group.length) {
+                console.log(`✅ Group ${index}: ${group.length} valid emojis`);
+            } else {
+                console.warn(`⚠️ Group ${index}: ${validEmojis.length}/${group.length} valid emojis`);
+            }
+        }
+    });
+    console.log('=== END VALIDATION ===');
+}
+
+// Run validation
+validateEmojiGroups();
 
 // ===== INITIALIZE GAME =====
 document.addEventListener('DOMContentLoaded', () => {
